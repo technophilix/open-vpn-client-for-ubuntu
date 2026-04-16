@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <!-- Background rounded square -->
+  <rect width="128" height="128" rx="24" fill="#161b22"/>
+
+  <!-- Shield body -->
+  <path d="M64 16 L104 32 L104 76 Q104 108 64 120 Q24 108 24 76 L24 32 Z"
+        fill="#0d1a0d" stroke="#39d353" stroke-width="3"/>
+
+  <!-- Shield inner surface -->
+  <path d="M64 24 L96 38 L96 75 Q96 102 64 112 Q32 102 32 75 L32 38 Z"
+        fill="#081208"/>
+
+  <!-- Tunnel depth lines -->
+  <line x1="40" y1="82" x2="88" y2="82" stroke="#39d353" stroke-width="2" opacity="0.45" stroke-linecap="round"/>
+  <line x1="43" y1="90" x2="85" y2="90" stroke="#39d353" stroke-width="2" opacity="0.28" stroke-linecap="round"/>
+  <line x1="46" y1="98" x2="82" y2="98" stroke="#39d353" stroke-width="2" opacity="0.13" stroke-linecap="round"/>
+
+  <!-- Lock body -->
+  <rect x="48" y="66" width="32" height="26" rx="6" fill="#39d353"/>
+
+  <!-- Lock shackle -->
+  <path d="M55 66 L55 56 Q64 48 73 56 L73 66"
+        fill="none" stroke="#39d353" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Keyhole circle -->
+  <circle cx="64" cy="77" r="5.5" fill="#0d1117"/>
+  <!-- Keyhole slot -->
+  <rect x="61.5" y="80" width="5" height="8" rx="1.5" fill="#0d1117"/>
+
+  <!-- Data flow arrow LEFT -->
+  <line x1="6" y1="72" x2="22" y2="72" stroke="#58a6ff" stroke-width="2.5" stroke-linecap="round"/>
+  <polyline points="16,66 23,72 16,78" fill="none" stroke="#58a6ff" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Data flow arrow RIGHT -->
+  <line x1="106" y1="72" x2="122" y2="72" stroke="#58a6ff" stroke-width="2.5" stroke-linecap="round"/>
+  <polyline points="116,66 123,72 116,78" fill="none" stroke="#58a6ff" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Green status dot at shield tip -->
+  <circle cx="64" cy="14" r="6" fill="#39d353"/>
+  <circle cx="64" cy="14" r="3" fill="#0d1117"/>
+</svg>
