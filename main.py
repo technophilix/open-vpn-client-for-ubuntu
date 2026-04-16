@@ -1007,21 +1007,74 @@ class OpenVPN3Client(QMainWindow):
         self.log.append_log(msg, ACCENT_GREEN if ok else ACCENT_RED)
         self._apply_state("idle")
 
-    # ── Close — never block GUI on wait() ────────────────────────────────────
+    # ── Close — fully non-blocking, never calls wait() ───────────────────────
     def closeEvent(self, event):
         self._stop_poller()
         for w in (self._start_worker, self._auth_worker, self._disc_worker):
             if w and w.isRunning():
-                w.stop() if hasattr(w, "stop") else w.terminate()
-                # Use a short non-blocking wait; if it doesn't exit, move on
-                w.wait(500)
+                # Signal the thread to stop — do NOT call wait() here.
+                # wait() blocks the GUI thread → GNOME detects freeze
+                # → shows force-quit dialog. Let the OS clean up.
+                if hasattr(w, "stop"):
+                    w.stop()
+                else:
+                    w.terminate()
         event.accept()
+        QApplication.instance().quit()
 
 
 # ── Entry ─────────────────────────────────────────────────────────────────────
+def _load_app_icon() -> QIcon:
+    """
+    Resolve the app icon in priority order:
+      1. hicolor theme PNGs  (installed .deb path)
+      2. SVG in pixmaps      (installed .deb fallback)
+      3. SVG next to this script (dev / run-in-place)
+    Returns a QIcon with all available sizes loaded.
+    """
+    icon = QIcon()
+
+    # 1 – hicolor theme PNGs
+    hicolor_base = Path("/usr/share/icons/hicolor")
+    if hicolor_base.exists():
+        for sz in [16, 24, 32, 48, 64, 128, 256]:
+            png = hicolor_base / f"{sz}x{sz}/apps/openvpn3-gui.png"
+            if png.exists():
+                icon.addFile(str(png), QSize(sz, sz))
+
+    # 2 – pixmaps PNG
+    if icon.isNull():
+        for candidate in [
+            Path("/usr/share/pixmaps/openvpn3-gui.png"),
+            Path("/usr/share/pixmaps/openvpn3-gui.svg"),
+        ]:
+            if candidate.exists():
+                icon = QIcon(str(candidate))
+                break
+
+    # 3 – same directory as this script (dev mode)
+    if icon.isNull():
+        here = Path(__file__).parent
+        for name in ["openvpn3-gui.png", "openvpn3-gui.svg",
+                     "icon_source.svg"]:
+            candidate = here / name
+            if candidate.exists():
+                icon = QIcon(str(candidate))
+                break
+
+    return icon
+
+
 def main():
     app = QApplication(sys.argv)
     app.setStyle("Fusion")
+    app.setDesktopFileName("openvpn3-gui")  # links window to .desktop → dock icon works
+
+    # Set app icon — shows in taskbar, alt-tab, window decoration
+    app_icon = _load_app_icon()
+    if not app_icon.isNull():
+        app.setWindowIcon(app_icon)
+
     pal = QPalette()
     pal.setColor(QPalette.Window,          QColor(BG_DARK))
     pal.setColor(QPalette.WindowText,      QColor(TEXT_PRIMARY))

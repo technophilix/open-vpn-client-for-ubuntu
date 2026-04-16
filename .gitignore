@@ -1,5 +1,4 @@
 env
 .idea
 debian
-build_deb.sh
 *.deb
